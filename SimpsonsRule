@@ -1,0 +1,87 @@
+import React, { useState } from 'react';
+import { pow,sqrt } from 'mathjs';
+import Show_graph from '../graph_show';
+function SimpsonsRule() {
+  const [funcString, setFuncString] = useState('x*x');
+  const [func, setFunc] = useState('x*x');
+  const [lowerLimit, setLowerLimit] = useState(0);
+  const [upperLimit, setUpperLimit] = useState(1);
+  const [subintervals, setSubintervals] = useState(10);
+  const [result, setResult] = useState(null);
+  const [accept,setAccept] = useState(true);
+  const evaluateFunction = (func, x) => {
+    return eval(func.replace('x', x));
+  };
+
+  const calculateIntegral = () => {
+    setAccept(true);
+    if(subintervals%2 ==0){
+      let h = (upperLimit - lowerLimit) / subintervals;
+    let sum = evaluateFunction(funcString, lowerLimit) + evaluateFunction(funcString, upperLimit);
+
+    for (let i = 1; i < subintervals; i += 2) {
+      sum += 4 * evaluateFunction(funcString, lowerLimit + i * h);
+    }
+
+    for (let i = 2; i < subintervals - 1; i += 2) {
+      sum += 2 * evaluateFunction(funcString, lowerLimit + i * h);
+    }
+
+    setResult((h / 3) * sum);
+    setFunc(funcString);
+  }else{
+    setAccept(false);
+  }
+    
+  };
+
+  return (
+    <div>
+      <label>Function f(x): </label>
+      <input
+        value={funcString}
+        onChange={(e) => setFuncString(e.target.value)}
+        placeholder="Example: x*x"
+      />
+
+      <br />
+
+      <label>Lower Limit: </label>
+      <input
+        type="number"
+        value={lowerLimit}
+        onChange={(e) => setLowerLimit(Number(e.target.value))}
+      />
+
+      <br />
+
+      <label>Upper Limit: </label>
+      <input
+        type="number"
+        value={upperLimit}
+        onChange={(e) => setUpperLimit(Number(e.target.value))}
+      />
+
+      <br />
+
+      <label>Subintervals: </label>
+      <input
+        type="number"
+        value={subintervals}
+        onChange={(e) => setSubintervals(Number(e.target.value))}
+      />
+
+      <br />
+
+      <button onClick={calculateIntegral}>Calculate</button>
+
+      <br />
+
+      {result !== null && <div>Result: {result}</div>}
+      {accept == false && <div>Please input Subintervals odd number</div>}
+      <Show_graph func={func} x={result} y={evaluateFunction(func,result)}/>
+    </div>
+  );
+}
+
+export default SimpsonsRule;
