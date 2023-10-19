@@ -1,2 +1,2 @@
 # Numer
-website to solve numerical method
+source code how to solve numerical method
